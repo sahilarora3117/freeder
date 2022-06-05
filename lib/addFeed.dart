@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+import 'network/fetchFeed.dart';
+import 'package:webfeed/webfeed.dart';
+import 'data/database.dart';
+
+class addFeed extends StatefulWidget {
+  const addFeed({Key? key}) : super(key: key);
+
+  @override
+  State<addFeed> createState() => _addFeedState();
+}
+
+class _addFeedState extends State<addFeed> {
+  final _formKey = GlobalKey<FormState>();
+  RssFeed _feed = RssFeed();
+
+  checkFeedURL(String feedURL) {
+    fetchFeed(feedURL).then((result) {
+      setState(() {
+        _feed = result;
+        if (_feed.title == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                backgroundColor: Colors.red,
+                content: Text('Invalid feed provided')),
+          );
+          return;
+        } else {
+          var feed = feedListModelfinal(
+              feedName: _feed.title as String, feedUrl: feedURL);
+          DBProvider.db.insertFeed(feed);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                backgroundColor: Colors.green, content: Text('Feed Added')),
+          );
+          return;
+        }
+      });
+    });
+  }
+
+  final urlFieldController = TextEditingController();
+
+  void dispose() {
+    urlFieldController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Add a feed"), centerTitle: true),
+      body: Center(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text("Enter the url for the feed"),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextFormField(
+                  controller: urlFieldController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a valid URL';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    checkFeedURL(urlFieldController.text);
+                  },
+                  child: const Text('Submit'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
