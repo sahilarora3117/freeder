@@ -50,7 +50,9 @@ class _addFeedState extends State<addFeed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add a feed"), centerTitle: true),
+      appBar: AppBar(
+        title: const Text("Add feed"),
+      ),
       body: Center(
         child: Form(
           key: _formKey,
