@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:freeder/model/saveFeedModel.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../network/WebView/webview.dart';
 // ignore: depend_on_referenced_packages
 import 'package:html/dom.dart' as dom;
 import '../data/database.dart';
-
 
 class feedCard extends StatefulWidget {
   late String title;
@@ -27,32 +27,44 @@ class feedCard extends StatefulWidget {
 }
 
 class _feedCardState extends State<feedCard> {
-
-  bool isSaved= false;
+  bool isSaved = false;
   @override
   void initState() {
     super.initState();
     isSavedCheck(widget.url);
-
   }
+
+  void _launchUrl(url) async {
+  if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) throw 'Could not launch';
+}
+
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 6,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          titleComponent(context, widget.title),
-          pubDateComponent(context, widget.pubDate),
-          imageComponent(context, widget.enclosure),
-          descriptionComponent(context, widget.description),
-          bottomControls(context, widget.title, widget.pubDate, widget.description, widget.url, widget.enclosure),
-        ],
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => WebViewExample(url: widget.url as String)));
+      },
+      
+      child: Card(
+        elevation: 6,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            titleComponent(context, widget.title),
+            pubDateComponent(context, widget.pubDate),
+            imageComponent(context, widget.enclosure),
+            descriptionComponent(context, widget.description),
+            bottomControls(context, widget.title, widget.pubDate,
+                widget.description, widget.url, widget.enclosure),
+          ],
+        ),
       ),
     );
   }
 
   isSavedCheck(url) async {
-    
     bool check = await DBProvider.db.isInSaved(url);
     setState(() {
       isSaved = check;
@@ -118,17 +130,16 @@ class _feedCardState extends State<feedCard> {
     return const SizedBox.shrink();
   }
 
-  bottomControls(BuildContext context, String title, String pubDate, String description, String url, String enclosure) {
+  bottomControls(BuildContext context, String title, String pubDate,
+      String description, String url, String enclosure) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         isFavouriteButton(title, pubDate, description, url, enclosure),
         IconButton(
+          tooltip: "Open in browser",
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WebViewExample(url: url)));
+            _launchUrl(url);
           },
           icon: Icon(Icons.public),
         ),
@@ -137,12 +148,17 @@ class _feedCardState extends State<feedCard> {
     );
   }
 
-isFavouriteButton(String title, String pubDate, String description, String url, String enclosure) {
+  isFavouriteButton(String title, String pubDate, String description,
+      String url, String enclosure) {
     if (!isSaved) {
       return IconButton(
         onPressed: () {
-          
-          var item = savedFeedModel(title: title, pubDate: pubDate, description: description, url: url, enclosure: enclosure);
+          var item = savedFeedModel(
+              title: title,
+              pubDate: pubDate,
+              description: description,
+              url: url,
+              enclosure: enclosure);
           DBProvider.db.insertSaved(item);
           isSavedCheck(url);
         },
@@ -158,7 +174,6 @@ isFavouriteButton(String title, String pubDate, String description, String url, 
       tooltip: "Remove from saved post",
       icon: Icon(Icons.star),
       color: Colors.yellow.shade800,
-
     );
   }
 }
