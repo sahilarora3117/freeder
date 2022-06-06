@@ -135,7 +135,7 @@ class _feedCardState extends State<feedCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        isFavouriteButton(title, pubDate, description, url, enclosure),
+        isSavedButton(title, pubDate, description, url, enclosure),
         IconButton(
           tooltip: "Open in browser",
           onPressed: () {
@@ -143,12 +143,11 @@ class _feedCardState extends State<feedCard> {
           },
           icon: Icon(Icons.public),
         ),
-        // isFavouriteButton(),
       ],
     );
   }
 
-  isFavouriteButton(String title, String pubDate, String description,
+  isSavedButton(String title, String pubDate, String description,
       String url, String enclosure) {
     if (!isSaved) {
       return IconButton(
