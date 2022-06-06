@@ -43,7 +43,7 @@ class _FeedPageState extends State<FeedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('RSS Feed List'),
+        title: const Text('Freeder'),
         elevation: 0,
         actions: <Widget>[
           Padding(
@@ -91,7 +91,7 @@ class _FeedPageState extends State<FeedPage> {
                       feedTile(i, context),
                   ],
                 ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
@@ -103,8 +103,7 @@ class _FeedPageState extends State<FeedPage> {
           );
         },
         tooltip: "Add Feed",
-        label: const Text('Add Feed'),
-        icon: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
     // }
