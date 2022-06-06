@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:freeder/model/saveFeedModel.dart';
 import '../network/WebView/webview.dart';
 // ignore: depend_on_referenced_packages
 import 'package:html/dom.dart' as dom;
@@ -27,11 +28,11 @@ class feedCard extends StatefulWidget {
 
 class _feedCardState extends State<feedCard> {
 
-  bool isFavourite = false;
+  bool isSaved= false;
   @override
   void initState() {
     super.initState();
-    isfavouritecheck(widget.url);
+    isSavedCheck(widget.url);
 
   }
   Widget build(BuildContext context) {
@@ -50,11 +51,11 @@ class _feedCardState extends State<feedCard> {
     );
   }
 
-  isfavouritecheck(url) async {
+  isSavedCheck(url) async {
     
-    bool check = await DBProvider.db.isInFavourites(url);
+    bool check = await DBProvider.db.isInSaved(url);
     setState(() {
-      isFavourite = check;
+      isSaved = check;
     });
   }
 
@@ -137,24 +138,26 @@ class _feedCardState extends State<feedCard> {
   }
 
 isFavouriteButton(String title, String pubDate, String description, String url, String enclosure) {
-    if (!isFavourite) {
+    if (!isSaved) {
       return IconButton(
         onPressed: () {
           
-          var item = favouriteListModel(title: title, pubDate: pubDate, description: description, url: url, enclosure: enclosure);
-          DBProvider.db.insertFavourites(item);
-          isfavouritecheck(url);
+          var item = savedFeedModel(title: title, pubDate: pubDate, description: description, url: url, enclosure: enclosure);
+          DBProvider.db.insertSaved(item);
+          isSavedCheck(url);
         },
-        icon: Icon(Icons.favorite),
+        tooltip: "Save post",
+        icon: Icon(Icons.star),
       );
     }
     return IconButton(
       onPressed: () {
-        DBProvider.db.removeFavourites(url);
-        isfavouritecheck(url);
+        DBProvider.db.removeSaved(url);
+        isSavedCheck(url);
       },
-      icon: Icon(Icons.favorite),
-      color: Colors.red,
+      tooltip: "Remove from saved post",
+      icon: Icon(Icons.star),
+      color: Colors.yellow.shade800,
 
     );
   }

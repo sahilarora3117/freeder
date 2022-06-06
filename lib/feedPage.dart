@@ -5,7 +5,7 @@ import 'feed.dart';
 import 'addFeed.dart';
 import 'settings.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'favourites.dart';
+import 'saved.dart';
 import 'data/database.dart';
 import 'model/feedListModel.dart';
 
@@ -53,11 +53,11 @@ class _FeedPageState extends State<FeedPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Favourites(),
+                    builder: (context) => const Saved(),
                   ),
                 );
               },
-              child: const Icon(Icons.favorite_outline_sharp),
+              child: const Icon(Icons.star),
             ),
           ),
           Padding(

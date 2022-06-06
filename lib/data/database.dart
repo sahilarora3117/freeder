@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../model/feedListModel.dart';
+import '../model/saveFeedModel.dart';
 
 class DBProvider {
   DBProvider._();
@@ -20,7 +21,7 @@ class DBProvider {
       join(await getDatabasesPath(), 'feeds.db'),
       onCreate: (db, version) async {
         await db.execute(
-          'CREATE TABLE favourites(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT, pubDate TEXT, description TEXT, url TEXT, enclosure TEXT)',
+          'CREATE TABLE saved(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT, pubDate TEXT, description TEXT, url TEXT, enclosure TEXT)',
         );
         await db.execute(
           'CREATE TABLE listoffeed(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,feedName TEXT, feedURL TEXT)',
@@ -30,21 +31,21 @@ class DBProvider {
     );
   }
 
-  insertFavourites(favouriteListModel favorite) async {
+  insertSaved(savedFeedModel saved) async {
     final db = await database;
     await db.insert(
-      'favourites',
-      favorite.toMap(),
+      'saved',
+      saved.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<List<favouriteListModel>> favorites() async {
+  Future<List<savedFeedModel>> saved() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('favourites');
+    final List<Map<String, dynamic>> maps = await db.query('saved');
 
     return List.generate(maps.length, (i) {
-      return favouriteListModel(
+      return savedFeedModel(
         ID: maps[i]['ID'],
         title: maps[i]['title'],
         pubDate: maps[i]['pubDate'],
@@ -55,19 +56,19 @@ class DBProvider {
     });
   }
 
-  Future<void> removeFavourites(String url) async {
+  Future<void> removeSaved(String url) async {
     final db = await database;
     await db.delete(
-      'favourites',
+      'saved',
       where: 'url = ?',
       whereArgs: [url],
     );
   }
 
-  Future<bool> isInFavourites(String url) async {
+  Future<bool> isInSaved(String url) async {
     final db = await database;
     var queryResult =
-        await db.rawQuery("SELECT * FROM favourites WHERE url=\"$url\"");
+        await db.rawQuery("SELECT * FROM saved WHERE url=\"$url\"");
     if (queryResult.isNotEmpty) {
       return true;
     } else {
@@ -111,30 +112,5 @@ class DBProvider {
   }
 }
 
-class favouriteListModel {
-  int? ID;
-  String title;
-  String pubDate;
-  String description;
-  String url;
-  String enclosure;
-  favouriteListModel({
-    this.ID,
-    required this.title,
-    required this.pubDate,
-    required this.description,
-    required this.url,
-    required this.enclosure,
-  });
-  Map<String, dynamic> toMap() {
-    return {
-      'ID': ID,
-      'title': title,
-      'pubDate': pubDate,
-      'description': description,
-      'url': url,
-      'enclosure': enclosure,
-    };
-  }
-}
+
 
