@@ -7,6 +7,7 @@ import 'settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'favourites.dart';
 import 'data/database.dart';
+import 'model/feedListModel.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);

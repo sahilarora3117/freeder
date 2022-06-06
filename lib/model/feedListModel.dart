@@ -1,7 +1,14 @@
-class feedListModel1 {
-
+class feedListModelfinal {
+  int? ID;
   String feedName;
   String feedUrl;
-  feedListModel1({required this.feedName,required this.feedUrl});
+  feedListModelfinal({this.ID, required this.feedName, required this.feedUrl});
 
+  Map<String, dynamic> toMap() {
+    return {
+      'ID': ID,
+      'feedName': feedName,
+      'feedUrl': feedUrl,
+    };
+  }
 }
