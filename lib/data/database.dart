@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../model/feedListModel.dart';
 import '../model/saveFeedModel.dart';
+import '../model/feedHistoryModel.dart';
 
 class DBProvider {
   DBProvider._();
@@ -13,7 +15,6 @@ class DBProvider {
   static Database? _database;
 
   Future<Database> get database async => _database ??= await initDB();
-  
 
   initDB() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -113,7 +114,13 @@ class DBProvider {
       whereArgs: [id],
     );
   }
+
+  insertHistoryFeed(feedHistoryModel item) async {
+    final db = await database;
+    await db.insert(
+      'feedhistory',
+      item.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 }
-
-
-
