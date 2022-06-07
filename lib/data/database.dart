@@ -26,6 +26,9 @@ class DBProvider {
         await db.execute(
           'CREATE TABLE listoffeed(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,feedName TEXT, feedURL TEXT)',
         );
+        await db.execute(
+          'CREATE TABLE feedhistory(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, feedURL TEXT , title TEXT, pubDate TEXT, description TEXT, url TEXT, enclosure TEXT, isRead TEXT)',
+        );
       },
       version: 1,
     );
