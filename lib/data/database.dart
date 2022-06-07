@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
@@ -122,5 +121,23 @@ class DBProvider {
       item.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  fetchFeedHistory(String feedURL) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('feedhistory', where: "feedURL=?", whereArgs: [feedURL]);
+        return List.generate(maps.length, (i) {
+      return feedHistoryModel(
+      ID: maps[i]['ID'],
+      feedURL: maps[i]['feedURL'], 
+      title: maps[i]['title'], 
+      pubDate: maps[i]['pubDate'], 
+      description: maps[i]['description'], 
+      url: maps[i]['url'], 
+      enclosure: maps[i]['enclosure'], 
+      isRead: maps[i]['isRead']);
+    });
+
+
   }
 }
