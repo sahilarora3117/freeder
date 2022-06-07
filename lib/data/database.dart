@@ -138,6 +138,16 @@ class DBProvider {
       isRead: maps[i]['isRead']);
     });
 
-
   }
+  Future<bool> isInFeedHistory(String url) async{
+    final db = await database;
+    var queryResult =
+        await db.rawQuery("SELECT * FROM feedhistory WHERE url=\"$url\"");
+    if (queryResult.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
