@@ -116,30 +116,35 @@ class DBProvider {
 
   insertHistoryFeed(feedHistoryModel item) async {
     final db = await database;
-    await db.insert(
-      'feedhistory',
-      item.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try {
+      await db.insert(
+        'feedhistory',
+        item.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   fetchFeedHistory(String feedURL) async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('feedhistory', where: "feedURL=?", whereArgs: [feedURL]);
-        return List.generate(maps.length, (i) {
+    final List<Map<String, dynamic>> maps =
+        await db.query('feedhistory', where: "feedURL=?", whereArgs: [feedURL]);
+    return List.generate(maps.length, (i) {
       return feedHistoryModel(
-      ID: maps[i]['ID'],
-      feedURL: maps[i]['feedURL'], 
-      title: maps[i]['title'], 
-      pubDate: maps[i]['pubDate'], 
-      description: maps[i]['description'], 
-      url: maps[i]['url'], 
-      enclosure: maps[i]['enclosure'], 
-      isRead: maps[i]['isRead']);
+          ID: maps[i]['ID'],
+          feedURL: maps[i]['feedURL'],
+          title: maps[i]['title'],
+          pubDate: maps[i]['pubDate'],
+          description: maps[i]['description'],
+          url: maps[i]['url'],
+          enclosure: maps[i]['enclosure'],
+          isRead: maps[i]['isRead']);
     });
-
   }
-  Future<bool> isInFeedHistory(String url) async{
+
+  Future<bool> isInFeedHistory(String url) async {
     final db = await database;
     var queryResult =
         await db.rawQuery("SELECT * FROM feedhistory WHERE url=\"$url\"");
@@ -149,5 +154,4 @@ class DBProvider {
       return false;
     }
   }
-
 }

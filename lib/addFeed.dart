@@ -16,10 +16,10 @@ class _addFeedState extends State<addFeed> {
   RssFeed _feed = RssFeed();
 
   checkFeedURL(String feedURL) {
-    fetchFeed(feedURL).then((result) {
+    fetchTitle(feedURL).then((result) {
       setState(() {
-        _feed = result;
-        if (_feed.title == null) {
+        print(result);
+        if (result == "") {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
                 backgroundColor: Colors.red,
@@ -28,7 +28,7 @@ class _addFeedState extends State<addFeed> {
           return;
         } else {
           var feed = feedListModelfinal(
-              feedName: _feed.title as String, feedUrl: feedURL);
+              feedName: result, feedUrl: feedURL);
           DBProvider.db.insertFeed(feed);
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -43,6 +43,7 @@ class _addFeedState extends State<addFeed> {
 
   final urlFieldController = TextEditingController();
 
+  @override
   void dispose() {
     urlFieldController.dispose();
     super.dispose();
