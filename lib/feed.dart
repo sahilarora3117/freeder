@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:webfeed/webfeed.dart';
+import 'package:freeder/data/database.dart';
+import 'package:freeder/model/feedHistoryModel.dart';
 import 'network/fetchFeed.dart';
-import 'package:intl/intl.dart';
 import 'widgets/feedCard.dart';
 
 class Feed extends StatefulWidget {
@@ -19,63 +19,59 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   String loadingState = "loading";
-  RssFeed _feed = RssFeed();
+  List<feedHistoryModel> _feed = [];
   void initState() {
     super.initState();
-    load();
+    load(widget.feedURL);
+    _refresh();
   }
 
-  load() async {
+  load(String feedURL) async {
     setState(() {
       loadingState = "loading";
     });
-    if (_feed == RssFeed()) return;
-    fetchFeed(widget.feedURL).then((result) {
-      updateFeed(result);
+    if (_feed == []) return;
+    List<feedHistoryModel> localFeed =
+        await DBProvider.db.fetchFeedHistory(feedURL);
+    localFeed = localFeed.reversed.toList();
+
+    setState(() {
+      _feed = localFeed;
+      loadingState = "loaded";
     });
   }
 
-  updateFeed(result) {
-    _feed = result;
-    setState(() {
-      loadingState = "loaded";
-    });
+  Future<void> _refresh() async {
+    try {
+      int newPostCount = await fetchFeed(widget.feedURL);
+      print(newPostCount);
+      if (newPostCount > 0) {
+        load(widget.feedURL);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   feedbody() {
     return MediaQuery.removePadding(
       context: context,
       removeTop: true,
-      child: ListView.builder(
-        itemCount: _feed.items!.length,
-        itemBuilder: (BuildContext context, int index) {
-          final item = _feed.items![index];
-          String pubDate = "";
-          String description = "";
-          String enclosure = "";
-          try {
-            pubDate = DateFormat('yMd').format(item.pubDate as DateTime);
-          } catch (e) {
-            pubDate = "";
-          }
-          try {
-            description = item.description as String;
-          } catch (e) {
-            description = "";
-          }
-          try {
-            enclosure = item.enclosure?.url as String;
-          } catch (e) {
-            enclosure = "";
-          }
-          return feedCard(
-            title: item.title as String,
-            pubDate: pubDate,
-            enclosure: enclosure,
-            description: description,
-            url: item.link as String,
-          );
-        },
+      child: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView.builder(
+          itemCount: _feed.length,
+          itemBuilder: (BuildContext context, int index) {
+            final item = _feed[index];
+            return feedCard(
+              title: item.title,
+              pubDate: item.pubDate,
+              enclosure: item.enclosure,
+              description: item.description,
+              url: item.url,
+            );
+          },
+        ),
       ),
     );
   }
@@ -88,7 +84,7 @@ class _FeedState extends State<Feed> {
           body: const Center(
             child: CircularProgressIndicator(),
           ));
-    } else if (_feed.items == null) {
+    } else if (_feed == []) {
       return Scaffold(
         appBar: AppBar(title: Text(widget.feedTitle)),
         body: Center(
@@ -104,7 +100,7 @@ class _FeedState extends State<Feed> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    load();
+                    load(widget.feedURL);
                   },
                   child: const Text('Refresh'),
                 ),
