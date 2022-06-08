@@ -29,11 +29,9 @@ class feedCard extends StatefulWidget {
 }
 
 class _feedCardState extends State<feedCard> {
-  bool isSaved = false;
   @override
   void initState() {
     super.initState();
-    isSavedCheck(widget.url);
   }
 
   void _launchUrl(url) async {
@@ -74,12 +72,7 @@ class _feedCardState extends State<feedCard> {
     );
   }
 
-  isSavedCheck(url) async {
-    bool check = await DBProvider.db.isInSaved(url);
-    setState(() {
-      isSaved = check;
-    });
-  }
+
 
   imageComponent(BuildContext context, String enclosure) {
     if (enclosure != "") {
@@ -145,7 +138,6 @@ class _feedCardState extends State<feedCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        isSavedButton(title, pubDate, description, url, enclosure),
         IconButton(
           tooltip: "Open in browser",
           onPressed: () {
@@ -154,35 +146,6 @@ class _feedCardState extends State<feedCard> {
           icon: Icon(Icons.public),
         ),
       ],
-    );
-  }
-
-  isSavedButton(String title, String pubDate, String description, String url,
-      String enclosure) {
-    if (!isSaved) {
-      return IconButton(
-        onPressed: () {
-          var item = savedFeedModel(
-              title: title,
-              pubDate: pubDate,
-              description: description,
-              url: url,
-              enclosure: enclosure);
-          DBProvider.db.insertSaved(item);
-          isSavedCheck(url);
-        },
-        tooltip: "Save post",
-        icon: Icon(Icons.star),
-      );
-    }
-    return IconButton(
-      onPressed: () {
-        DBProvider.db.removeSaved(url);
-        isSavedCheck(url);
-      },
-      tooltip: "Remove from saved post",
-      icon: Icon(Icons.star),
-      color: Colors.yellow.shade800,
     );
   }
 }
