@@ -29,9 +29,13 @@ class feedCard extends StatefulWidget {
 }
 
 class _feedCardState extends State<feedCard> {
+  late String isRead;
   @override
   void initState() {
     super.initState();
+    setState(() {
+      isRead = widget.isRead;
+    });
   }
 
   void _launchUrl(url) async {
@@ -40,39 +44,53 @@ class _feedCardState extends State<feedCard> {
   }
 
   Widget build(BuildContext context) {
+    void toggleRead(url) async {
+      int count = await DBProvider.db.toggleRead(url);
+    }
+
     return InkWell(
       onTap: () {
+        if (isRead == "false") {
+          DBProvider.db.toggleRead(widget.url);
+        }
+        setState(() {
+          isRead = "true";
+        });
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    WebViewExample(url: widget.url as String)));
+                builder: (context) => WebViewExample(url: widget.url)));
       },
-      child: Container(
-        
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(width: 1.0, color: ThemeData().primaryTextTheme.headline1!.color as Color),
-          ),
-        ),
-        child: Card(
-          color: widget.isRead == "true" ? ThemeData().bottomAppBarColor.withOpacity(0.5) : ThemeData().bottomAppBarColor,
-          margin: EdgeInsets.zero,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              titleComponent(context, widget.title),
-              pubDateComponent(context, widget.pubDate),
-              imageComponent(context, widget.enclosure),
-              descriptionComponent(context, widget.description),
-            ],
-          ),
-        ),
-      ),
+      child: (isRead == "false")
+          ? Card(
+              elevation: 4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  titleComponent(context, widget.title),
+                  pubDateComponent(context, widget.pubDate),
+                  imageComponent(context, widget.enclosure),
+                  descriptionComponent(context, widget.description),
+                ],
+              ),
+            )
+          : Opacity(
+              opacity: 0.6,
+              child: Card(
+                elevation: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    titleComponent(context, widget.title),
+                    pubDateComponent(context, widget.pubDate),
+                    imageComponent(context, widget.enclosure),
+                    descriptionComponent(context, widget.description),
+                  ],
+                ),
+              ),
+            ),
     );
   }
-
-
 
   imageComponent(BuildContext context, String enclosure) {
     if (enclosure != "") {

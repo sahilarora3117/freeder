@@ -166,15 +166,15 @@ class DBProvider {
     }
   }
 
-  toggleRead(String url) async {
+  Future<int> toggleRead(String url) async {
     final db = await database;
     final isR = isRead(url);
     if (isR == true) {
-      int updateCount = await db.rawUpdate(
-          "UPDATE feedhistory SET isRead='false' WHERE url=?", [url]);
+      int updateCount = await db.rawUpdate("UPDATE feedhistory SET isRead='false' WHERE url=?", [url]);
+      return updateCount;
     } else {
-      int updateCount = await db
-          .rawUpdate("UPDATE feedhistory SET isRead='true' WHERE url=?", [url]);
+      int updateCount = await db.rawUpdate("UPDATE feedhistory SET isRead='true' WHERE url=?", [url]);
+      return updateCount;
     }
   }
 }
