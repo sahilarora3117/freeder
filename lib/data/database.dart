@@ -154,4 +154,27 @@ class DBProvider {
       return false;
     }
   }
+
+  Future<bool> isRead(String url) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('feedhistory', where: "url=?", whereArgs: [url]);
+    if (maps[0]['isRead'] == "true") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  toggleRead(String url) async {
+    final db = await database;
+    final isR = isRead(url);
+    if (isR == true) {
+      int updateCount = await db.rawUpdate(
+          "UPDATE feedhistory SET isRead='false' WHERE url=?", [url]);
+    } else {
+      int updateCount = await db
+          .rawUpdate("UPDATE feedhistory SET isRead='true' WHERE url=?", [url]);
+    }
+  }
 }
