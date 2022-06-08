@@ -13,13 +13,15 @@ class feedCard extends StatefulWidget {
   late String description;
   String url;
   late String enclosure;
+  late String isRead;
   feedCard(
       {Key? key,
       required this.title,
       required this.pubDate,
       required this.enclosure,
       required this.description,
-      required this.url})
+      required this.url,
+      required this.isRead})
       : super(key: key);
 
   @override
@@ -35,8 +37,9 @@ class _feedCardState extends State<feedCard> {
   }
 
   void _launchUrl(url) async {
-  if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) throw 'Could not launch';
-}
+    if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication))
+      throw 'Could not launch';
+  }
 
   Widget build(BuildContext context) {
     return InkWell(
@@ -44,21 +47,28 @@ class _feedCardState extends State<feedCard> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => WebViewExample(url: widget.url as String)));
+                builder: (context) =>
+                    WebViewExample(url: widget.url as String)));
       },
-      
-      child: Card(
-        elevation: 6,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            titleComponent(context, widget.title),
-            pubDateComponent(context, widget.pubDate),
-            imageComponent(context, widget.enclosure),
-            descriptionComponent(context, widget.description),
-            bottomControls(context, widget.title, widget.pubDate,
-                widget.description, widget.url, widget.enclosure),
-          ],
+      child: Container(
+        
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(width: 1.0, color: ThemeData().primaryTextTheme.headline1!.color as Color),
+          ),
+        ),
+        child: Card(
+          color: widget.isRead == "true" ? ThemeData().bottomAppBarColor.withOpacity(0.5) : ThemeData().bottomAppBarColor,
+          margin: EdgeInsets.zero,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              titleComponent(context, widget.title),
+              pubDateComponent(context, widget.pubDate),
+              imageComponent(context, widget.enclosure),
+              descriptionComponent(context, widget.description),
+            ],
+          ),
         ),
       ),
     );
@@ -147,8 +157,8 @@ class _feedCardState extends State<feedCard> {
     );
   }
 
-  isSavedButton(String title, String pubDate, String description,
-      String url, String enclosure) {
+  isSavedButton(String title, String pubDate, String description, String url,
+      String enclosure) {
     if (!isSaved) {
       return IconButton(
         onPressed: () {

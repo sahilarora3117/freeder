@@ -40,6 +40,7 @@ class _SavedsState extends State<Saved> {
             enclosure: item.enclosure,
             description: item.description,
             url: item.url,
+            isRead: "false",
           );
         },
       );

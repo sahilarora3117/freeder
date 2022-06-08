@@ -3,6 +3,8 @@ import 'package:freeder/data/database.dart';
 import 'package:freeder/model/feedHistoryModel.dart';
 import 'network/fetchFeed.dart';
 import 'widgets/feedCard.dart';
+import 'widgets/slideCard.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Feed extends StatefulWidget {
   final String feedTitle;
@@ -20,6 +22,7 @@ class Feed extends StatefulWidget {
 class _FeedState extends State<Feed> {
   String loadingState = "loading";
   List<feedHistoryModel> _feed = [];
+  
   void initState() {
     super.initState();
     load(widget.feedURL);
@@ -63,12 +66,27 @@ class _FeedState extends State<Feed> {
           itemCount: _feed.length,
           itemBuilder: (BuildContext context, int index) {
             final item = _feed[index];
-            return feedCard(
-              title: item.title,
-              pubDate: item.pubDate,
-              enclosure: item.enclosure,
-              description: item.description,
-              url: item.url,
+            return Slidable(
+              startActionPane: ActionPane(
+                  motion: const ScrollMotion(),
+                  extentRatio: 1,
+                  children: [
+                    slideCard(
+                      title: item.title,
+                      pubDate: item.pubDate,
+                      enclosure: item.enclosure,
+                      description: item.description,
+                      url: item.url,
+                    ),
+                  ]),
+              child: feedCard(
+                title: item.title,
+                pubDate: item.pubDate,
+                enclosure: item.enclosure,
+                description: item.description,
+                url: item.url,
+                isRead: item.isRead,
+              ),
             );
           },
         ),
