@@ -73,7 +73,9 @@ class _slideCardState extends State<slideCard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  shareURL(widget.title, widget.url);
+                },
                 icon: Icon(Icons.share_outlined),
               ),
               Text('Share')
