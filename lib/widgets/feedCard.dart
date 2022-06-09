@@ -6,6 +6,7 @@ import '../network/WebView/webview.dart';
 // ignore: depend_on_referenced_packages
 import 'package:html/dom.dart' as dom;
 import '../data/database.dart';
+import '../utils/utils.dart';
 
 class feedCard extends StatefulWidget {
   late String title;
@@ -48,35 +49,23 @@ class _feedCardState extends State<feedCard> {
       int count = await DBProvider.db.toggleRead(url);
     }
 
-    return InkWell(
-      onTap: () {
-        if (isRead == "false") {
-          DBProvider.db.toggleRead(widget.url);
-        }
-        setState(() {
-          isRead = "true";
-        });
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => WebViewExample(url: widget.url)));
-      },
-      child: (isRead == "false")
-          ? Card(
-              elevation: 4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  titleComponent(context, widget.title),
-                  pubDateComponent(context, widget.pubDate),
-                  imageComponent(context, widget.enclosure),
-                  descriptionComponent(context, widget.description),
-                ],
-              ),
-            )
-          : Opacity(
-              opacity: 0.6,
-              child: Card(
+    return Container(
+      width: double.infinity,
+      child: InkWell(
+        onTap: () {
+          if (isRead == "false") {
+            DBProvider.db.toggleRead(widget.url);
+          }
+          setState(() {
+            isRead = "true";
+          });
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => WebViewExample(url: widget.url)));
+        },
+        child: (isRead == "false")
+            ? Card(
                 elevation: 4,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,8 +76,23 @@ class _feedCardState extends State<feedCard> {
                     descriptionComponent(context, widget.description),
                   ],
                 ),
+              )
+            : Opacity(
+                opacity: 0.6,
+                child: Card(
+                  elevation: 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      titleComponent(context, widget.title),
+                      pubDateComponent(context, widget.pubDate),
+                      imageComponent(context, widget.enclosure),
+                      descriptionComponent(context, widget.description),
+                    ],
+                  ),
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -137,15 +141,19 @@ class _feedCardState extends State<feedCard> {
 
   descriptionComponent(BuildContext buildcontext, String description) {
     if (description != "") {
-      return Html(
-          data: description,
-          onLinkTap: (String? url, RenderContext context,
-              Map<String, String> attributes, dom.Element? element) {
-            Navigator.push(
-                buildcontext,
-                MaterialPageRoute(
-                    builder: (context) => WebViewExample(url: url as String)));
-          });
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(parseHtmlString(description), maxLines: 5,),
+      );
+      // return Html(
+      //     data: description,
+      //     onLinkTap: (String? url, RenderContext context,
+      //         Map<String, String> attributes, dom.Element? element) {
+      //       Navigator.push(
+      //           buildcontext,
+      //           MaterialPageRoute(
+      //               builder: (context) => WebViewExample(url: url as String)));
+      //     });
     }
     ;
     return const SizedBox.shrink();
