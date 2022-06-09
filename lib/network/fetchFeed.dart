@@ -4,12 +4,12 @@ import '../data/database.dart';
 import 'package:webfeed/webfeed.dart';
 import '../model/feedHistoryModel.dart';
 
-Future<int> fetchFeed(String feedURL) async {
+Future<List<feedHistoryModel>> fetchFeed(String feedURL) async {
   try {
     http.Response response = await http.get(Uri.parse(feedURL));
     final feed = RssFeed.parse(response.body);
     int newPostCount = 0;
-
+    List <feedHistoryModel> newFeedList = [];
     try {
       for (int index = feed.items!.length - 1; index >= 0; index--) {
         final item = feed.items![index];
@@ -26,13 +26,14 @@ Future<int> fetchFeed(String feedURL) async {
               isRead: "false",
               pubDate: item.pubDate?.toIso8601String()??"");
           DBProvider.db.insertHistoryFeed(historyItem);
+          newFeedList.add(historyItem);
         }
       }
     } catch (e) {
       rethrow;
     }
 
-    return newPostCount;
+    return newFeedList;
   } catch (e) {
     rethrow;
   }

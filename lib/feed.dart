@@ -5,6 +5,7 @@ import 'network/fetchFeed.dart';
 import 'widgets/feedCard.dart';
 import 'widgets/slideCard.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class Feed extends StatefulWidget {
   final String feedTitle;
@@ -22,7 +23,8 @@ class Feed extends StatefulWidget {
 class _FeedState extends State<Feed> {
   String loadingState = "loading";
   List<feedHistoryModel> _feed = [];
-  
+  ItemScrollController _scrollController = ItemScrollController();
+  int newPostCount = 0;
   void initState() {
     super.initState();
     load(widget.feedURL);
@@ -46,14 +48,23 @@ class _FeedState extends State<Feed> {
 
   Future<void> _refresh() async {
     try {
-      int newPostCount = await fetchFeed(widget.feedURL);
+      List<feedHistoryModel> localList = await fetchFeed(widget.feedURL);
+      setState(() {
+        newPostCount = localList.length;
+        if (newPostCount > 0) {
+          _feed = localList + _feed;
+        }
+      });
       print(newPostCount);
-      if (newPostCount > 0) {
-        load(widget.feedURL);
-      }
     } catch (e) {
       print(e);
     }
+    jumpTofeed();
+  }
+
+  jumpTofeed() {
+    print("jump to $newPostCount");
+    _scrollController.jumpTo(index: newPostCount);
   }
 
   feedbody() {
@@ -62,8 +73,9 @@ class _FeedState extends State<Feed> {
       removeTop: true,
       child: RefreshIndicator(
         onRefresh: _refresh,
-        child: ListView.builder(
+        child: ScrollablePositionedList.builder(
           itemCount: _feed.length,
+          itemScrollController: _scrollController,
           itemBuilder: (BuildContext context, int index) {
             final item = _feed[index];
             return Slidable(
