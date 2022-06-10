@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../feed.dart';
+// Pages
 import 'add_feed_page.dart';
 import 'settings_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'saved_posts_page.dart';
-import '../../data/database.dart';
+// Shared
+import 'package:freeder/ui/shared/feed_tile.dart';
+import 'package:freeder/ui/shared/nothing_to_show.dart';
+// Models
 import '../../model/feedListModel.dart';
+import 'package:freeder/controllers/feed_list_page_controller.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -16,25 +19,21 @@ class FeedPage extends StatefulWidget {
 
 class _FeedPageState extends State<FeedPage> {
   List<feedListModelfinal> feedList = [];
-  String feedListState = "ns";
-  getList() async {
-    setState(() {
-      feedListState = "ns";
-    });
-    List<feedListModelfinal> localFeed = await DBProvider.db.feeds();
+  bool feedListState = false;
+
+  _refresh() async {
+    List<feedListModelfinal> localFeed =
+        await FeedListPageController.controller.getFeedList();
     setState(() {
       feedList = localFeed;
-      feedListState = "st";
+      feedListState = true;
     });
   }
 
+  @override
   void initState() {
     super.initState();
-    getList();
-  }
-
-  void urlLaunch(url) async {
-    if (!await launchUrl(Uri.parse(url))) throw 'Could not launch $url';
+    _refresh();
   }
 
   @override
@@ -48,12 +47,8 @@ class _FeedPageState extends State<FeedPage> {
             padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Saved(),
-                  ),
-                );
+                FeedListPageController.controller
+                    .navigateTo(context, const Saved());
               },
               child: const Icon(Icons.star),
             ),
@@ -62,78 +57,42 @@ class _FeedPageState extends State<FeedPage> {
             padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const settings(),
-                  ),
-                );
+                FeedListPageController.controller
+                    .navigateTo(context, const settings());
               },
               child: const Icon(Icons.settings),
             ),
           ),
         ],
       ),
-      body: (feedListState == "ns")
+      body: (!feedListState)
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : feedList.isEmpty
-              ? const Center(
-                  child:
-                      Text('The feed list is empty click on "+" to add feeds.'),
+              ? const NothingToShow(
+                  nothingText: "Nothing but crickets here.",
                 )
               : ListView(
                   children: [
                     for (int i = 0; i < feedList.length; i++)
-                      feedTile(i, context),
+                      FeedListTile(
+                        feedID: feedList[i].ID as int,
+                        feedName: feedList[i].feedName,
+                        feedURL: feedList[i].feedUrl,
+                        refresh: _refresh,
+                      ),
                   ],
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => addFeed(),
-            ),
-          ).whenComplete(
-            () => getList(),
-          );
+          FeedListPageController.controller
+              .navigateTo(context, const addFeed());
         },
         tooltip: "Add Feed",
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
     // }
-  }
-
-  ListTile feedTile(int i, BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.album, size: 50),
-      title: Text(feedList[i].feedName),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.delete, size: 25),
-            onPressed: () async {
-              await DBProvider.db.deleteFeed(feedList[i].ID as int);
-              getList();
-            },
-          ),
-        ],
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Feed(
-              feedTitle: feedList[i].feedName,
-              feedURL: feedList[i].feedUrl,
-            ),
-          ),
-        );
-      },
-    );
   }
 }
