@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../themes/theme_model.dart';
+import '../../themes/theme_model.dart';
 import 'package:provider/provider.dart';
 
 class settings extends StatefulWidget {

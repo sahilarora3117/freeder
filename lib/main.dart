@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/feedPage.dart';
+import 'ui/pages/feed_list_page.dart';
 import 'themes/theme_model.dart';
 // import 'themes/theme_preferences.dart';
 import 'package:provider/provider.dart';
