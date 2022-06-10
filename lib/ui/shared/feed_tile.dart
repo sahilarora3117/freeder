@@ -33,8 +33,16 @@ class FeedListTile extends StatelessWidget {
         ],
       ),
       onTap: () {
-        FeedListPageController.controller
-            .navigateTo(context, Feed(feedTitle: feedName, feedURL: feedURL));
+        FeedListPageController.controller.navigateTo(
+          context,
+          Feed(
+            feedTitle: feedName,
+            feedURL: feedURL,
+          ),
+          () {
+            return;
+          },
+        );
       },
     );
   }

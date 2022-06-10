@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 // Pages
 import 'add_feed_page.dart';
@@ -47,8 +49,13 @@ class _FeedPageState extends State<FeedPage> {
             padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {
-                FeedListPageController.controller
-                    .navigateTo(context, const Saved());
+                FeedListPageController.controller.navigateTo(
+                  context,
+                  const Saved(),
+                  () {
+                    return;
+                  },
+                );
               },
               child: const Icon(Icons.star),
             ),
@@ -57,8 +64,13 @@ class _FeedPageState extends State<FeedPage> {
             padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
               onTap: () {
-                FeedListPageController.controller
-                    .navigateTo(context, const settings());
+                FeedListPageController.controller.navigateTo(
+                  context,
+                  const settings(),
+                  () {
+                    return;
+                  },
+                );
               },
               child: const Icon(Icons.settings),
             ),
@@ -87,7 +99,7 @@ class _FeedPageState extends State<FeedPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           FeedListPageController.controller
-              .navigateTo(context, const addFeed());
+              .navigateTo(context, const addFeed(), _refresh);
         },
         tooltip: "Add Feed",
         child: const Icon(Icons.add),

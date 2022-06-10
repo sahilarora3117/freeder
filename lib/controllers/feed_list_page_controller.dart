@@ -16,12 +16,12 @@ class FeedListPageController {
     await DBProvider.db.deleteFeed(feedID);
   }
 
-  navigateTo(BuildContext context, Widget route) {
+  navigateTo(BuildContext context, Widget route, VoidCallback onComplete) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => route,
       ),
-    );
+    ).whenComplete(() => onComplete());
   }
 }
