@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'network/fetchFeed.dart';
+import 'services/fetchFeed.dart';
 import 'package:webfeed/webfeed.dart';
 import 'data/database.dart';
 import 'model/feedListModel.dart';

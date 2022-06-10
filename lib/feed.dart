@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freeder/data/database.dart';
 import 'package:freeder/model/feedHistoryModel.dart';
-import 'network/fetchFeed.dart';
+import 'services/fetchFeed.dart';
 import 'widgets/feedCard.dart';
 import 'widgets/slideCard.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';

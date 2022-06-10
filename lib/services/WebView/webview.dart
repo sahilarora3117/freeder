@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:freeder/network/WebView/webViewStack.dart';
+import 'webViewStack.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'navigationControls.dart';
-import 'webViewStack.dart';
 import 'menu.dart';
 
 class WebViewExample extends StatefulWidget {
