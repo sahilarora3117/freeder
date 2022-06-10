@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../model/saveFeedModel.dart';
-import '../data/database.dart';
-import '../utils/utils.dart';
+import '../../model/saveFeedModel.dart';
+import '../../data/database.dart';
+import '../../utils/utils.dart';
 
 class slideCard extends StatefulWidget {
   final String title;
