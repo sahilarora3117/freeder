@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:freeder/addFeed.dart';
-import 'package:freeder/settings.dart';
-import 'feed.dart';
+import 'package:freeder/pages/addFeed.dart';
+import 'package:freeder/pages/settings.dart';
+import '../feed.dart';
 import 'addFeed.dart';
 import 'settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'saved.dart';
-import 'data/database.dart';
-import 'model/feedListModel.dart';
+import '../data/database.dart';
+import '../model/feedListModel.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);

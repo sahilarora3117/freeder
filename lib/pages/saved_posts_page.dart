@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'data/database.dart';
-import 'widgets/feedCard.dart';
-import 'model/saveFeedModel.dart';
+import '../data/database.dart';
+import '../widgets/feedCard.dart';
+import '../model/saveFeedModel.dart';
 
 class Saved extends StatefulWidget {
   const Saved({Key? key}) : super(key: key);

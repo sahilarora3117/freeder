@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'services/fetchFeed.dart';
+import '../services/fetchFeed.dart';
 import 'package:webfeed/webfeed.dart';
-import 'data/database.dart';
-import 'model/feedListModel.dart';
+import '../data/database.dart';
+import '../model/feedListModel.dart';
 
 class addFeed extends StatefulWidget {
   const addFeed({Key? key}) : super(key: key);
