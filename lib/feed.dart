@@ -47,8 +47,10 @@ class _FeedState extends State<Feed> {
   }
 
   Future<void> _refresh() async {
+    int old_len = _feed.length;
     try {
       List<feedHistoryModel> localList = await fetchFeed(widget.feedURL);
+
       setState(() {
         newPostCount = localList.length;
         if (newPostCount > 0) {
@@ -59,12 +61,15 @@ class _FeedState extends State<Feed> {
     } catch (e) {
       print(e);
     }
-    jumpTofeed();
+    jumpTofeed(old_len);
   }
 
-  jumpTofeed() {
+  jumpTofeed(old_len) {
     print("jump to $newPostCount");
+    if (old_len > 0) {
     _scrollController.jumpTo(index: newPostCount);
+
+    }
   }
 
   feedbody() {
