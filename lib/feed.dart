@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:freeder/data/database.dart';
 import 'package:freeder/model/feedHistoryModel.dart';
-import 'services/fetchFeed.dart';
 import 'ui/shared/feedCard.dart';
 import 'ui/shared/slideCard.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-
+import 'package:freeder/controllers/feed_controller.dart';
+import 'package:freeder/ui/shared/post/feed.dart';
 class Feed extends StatefulWidget {
   final String feedTitle;
   final String feedURL;
@@ -23,12 +22,14 @@ class Feed extends StatefulWidget {
 class _FeedState extends State<Feed> {
   String loadingState = "loading";
   List<feedHistoryModel> _feed = [];
-  ItemScrollController _scrollController = ItemScrollController();
+  final ItemScrollController _scrollController = ItemScrollController();
   int newPostCount = 0;
+
+  @override
   void initState() {
     super.initState();
     load(widget.feedURL);
-    _refresh();
+    _refresh(widget.feedURL);
   }
 
   load(String feedURL) async {
@@ -37,8 +38,7 @@ class _FeedState extends State<Feed> {
     });
     if (_feed == []) return;
     List<feedHistoryModel> localFeed =
-        await DBProvider.db.fetchFeedHistory(feedURL);
-    localFeed = localFeed.reversed.toList();
+        await FeedController.controller.getStoredPosts(feedURL);
 
     setState(() {
       _feed = localFeed;
@@ -46,10 +46,10 @@ class _FeedState extends State<Feed> {
     });
   }
 
-  Future<void> _refresh() async {
+  Future<void> _refresh(String feedURL) async {
     int old_len = _feed.length;
     try {
-      List<feedHistoryModel> localList = await fetchFeed(widget.feedURL);
+      List<feedHistoryModel> localList = await FeedController.controller.getNewPosts(feedURL);
 
       setState(() {
         newPostCount = localList.length;
@@ -61,54 +61,55 @@ class _FeedState extends State<Feed> {
     } catch (e) {
       print(e);
     }
+
     jumpTofeed(old_len);
   }
 
   jumpTofeed(old_len) {
     print("jump to $newPostCount");
     if (old_len > 0) {
-    _scrollController.jumpTo(index: newPostCount);
-
+      _scrollController.jumpTo(index: newPostCount);
     }
   }
 
   feedbody() {
-    return MediaQuery.removePadding(
-      context: context,
-      removeTop: true,
-      child: RefreshIndicator(
-        onRefresh: _refresh,
-        child: ScrollablePositionedList.builder(
-          itemCount: _feed.length,
-          itemScrollController: _scrollController,
-          itemBuilder: (BuildContext context, int index) {
-            final item = _feed[index];
-            return Slidable(
-              startActionPane: ActionPane(
-                  motion: const ScrollMotion(),
-                  extentRatio: 1,
-                  children: [
-                    slideCard(
-                      title: item.title,
-                      pubDate: item.pubDate,
-                      enclosure: item.enclosure,
-                      description: item.description,
-                      url: item.url,
-                    ),
-                  ]),
-              child: feedCard(
-                title: item.title,
-                pubDate: item.pubDate,
-                enclosure: item.enclosure,
-                description: item.description,
-                url: item.url,
-                isRead: item.isRead,
-              ),
-            );
-          },
-        ),
-      ),
-    );
+    return FeedMain(feed: _feed, refresh:() => _refresh(widget.feedURL), feedURL: widget.feedURL, controller: _scrollController,);
+    // return MediaQuery.removePadding(
+    //   context: context,
+    //   removeTop: true,
+    //   child: RefreshIndicator(
+    //     onRefresh: () {return _refresh(widget.feedURL);},
+    //     child: ScrollablePositionedList.builder(
+    //       itemCount: _feed.length,
+    //       itemScrollController: _scrollController,
+    //       itemBuilder: (BuildContext context, int index) {
+    //         final item = _feed[index];
+    //         return Slidable(
+    //           startActionPane: ActionPane(
+    //               motion: const ScrollMotion(),
+    //               extentRatio: 1,
+    //               children: [
+    //                 slideCard(
+    //                   title: item.title,
+    //                   pubDate: item.pubDate,
+    //                   enclosure: item.enclosure,
+    //                   description: item.description,
+    //                   url: item.url,
+    //                 ),
+    //               ]),
+    //           child: feedCard(
+    //             title: item.title,
+    //             pubDate: item.pubDate,
+    //             enclosure: item.enclosure,
+    //             description: item.description,
+    //             url: item.url,
+    //             isRead: item.isRead,
+    //           ),
+    //         );
+    //       },
+    //     ),
+    //   ),
+    // );
   }
 
   @override

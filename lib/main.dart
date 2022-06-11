@@ -17,7 +17,7 @@ class Freeder extends StatelessWidget {
           title: 'Flutter Demo',
           theme: themeNotifier.isDark ? ThemeData.dark() : ThemeData.light(),
           debugShowCheckedModeBanner: false,
-          home: FeedPage(),
+          home: const FeedPage(),
         );
       }),
     );
