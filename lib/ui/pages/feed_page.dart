@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:freeder/model/feedHistoryModel.dart';
-import 'ui/shared/feedCard.dart';
-import 'ui/shared/slideCard.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:freeder/controllers/feed_controller.dart';
 import 'package:freeder/ui/shared/post/feed.dart';
+
 class Feed extends StatefulWidget {
   final String feedTitle;
   final String feedURL;
@@ -49,7 +47,8 @@ class _FeedState extends State<Feed> {
   Future<void> _refresh(String feedURL) async {
     int old_len = _feed.length;
     try {
-      List<feedHistoryModel> localList = await FeedController.controller.getNewPosts(feedURL);
+      List<feedHistoryModel> localList =
+          await FeedController.controller.getNewPosts(feedURL);
 
       setState(() {
         newPostCount = localList.length;
@@ -70,46 +69,6 @@ class _FeedState extends State<Feed> {
     if (old_len > 0) {
       _scrollController.jumpTo(index: newPostCount);
     }
-  }
-
-  feedbody() {
-    return FeedMain(feed: _feed, refresh:() => _refresh(widget.feedURL), feedURL: widget.feedURL, controller: _scrollController,);
-    // return MediaQuery.removePadding(
-    //   context: context,
-    //   removeTop: true,
-    //   child: RefreshIndicator(
-    //     onRefresh: () {return _refresh(widget.feedURL);},
-    //     child: ScrollablePositionedList.builder(
-    //       itemCount: _feed.length,
-    //       itemScrollController: _scrollController,
-    //       itemBuilder: (BuildContext context, int index) {
-    //         final item = _feed[index];
-    //         return Slidable(
-    //           startActionPane: ActionPane(
-    //               motion: const ScrollMotion(),
-    //               extentRatio: 1,
-    //               children: [
-    //                 slideCard(
-    //                   title: item.title,
-    //                   pubDate: item.pubDate,
-    //                   enclosure: item.enclosure,
-    //                   description: item.description,
-    //                   url: item.url,
-    //                 ),
-    //               ]),
-    //           child: feedCard(
-    //             title: item.title,
-    //             pubDate: item.pubDate,
-    //             enclosure: item.enclosure,
-    //             description: item.description,
-    //             url: item.url,
-    //             isRead: item.isRead,
-    //           ),
-    //         );
-    //       },
-    //     ),
-    //   ),
-    // );
   }
 
   @override
@@ -156,7 +115,12 @@ class _FeedState extends State<Feed> {
                   snap: true,
                 )
               ]),
-          body: feedbody(),
+          body: FeedMain(
+            feed: _feed,
+            refresh: () => _refresh(widget.feedURL),
+            feedURL: widget.feedURL,
+            controller: _scrollController,
+          ),
         ),
       );
     }

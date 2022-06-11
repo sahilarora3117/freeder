@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freeder/controllers/feed_list_page_controller.dart';
-import 'package:freeder/feed.dart';
+import 'package:freeder/ui/pages/feed_page.dart';
 
 class FeedListTile extends StatelessWidget {
   final int feedID;
