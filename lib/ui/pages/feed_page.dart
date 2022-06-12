@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freeder/model/feedHistoryModel.dart';
+import 'package:freeder/ui/shared/network_error.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:freeder/controllers/feed_controller.dart';
 import 'package:freeder/ui/shared/post/feed.dart';
@@ -82,27 +83,7 @@ class _FeedState extends State<Feed> {
     } else if (_feed == []) {
       return Scaffold(
         appBar: AppBar(title: Text(widget.feedTitle)),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Center(
-                  child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Text("An Error occured while loading this feed"),
-              )),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    load(widget.feedURL);
-                  },
-                  child: const Text('Refresh'),
-                ),
-              )
-            ],
-          ),
-        ),
+        body: NetworkError(refresh: load(widget.feedURL))
       );
     } else {
       return Scaffold(
