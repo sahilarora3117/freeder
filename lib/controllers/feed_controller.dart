@@ -11,9 +11,9 @@ class FeedController {
   List<feedHistoryModel> _feed = [];
 
   Future<List<feedHistoryModel>> getStoredPosts(feedURL) async {
-    List<feedHistoryModel> tmp = await DBProvider.db.fetchFeedHistory(feedURL);
-    tmp = tmp.reversed.toList();
-    _feed = tmp + _feed;
+     _feed = await DBProvider.db.fetchFeedHistory(feedURL);
+    // fee = tmp.reversed.toList();
+    // _feed = tmp + _feed;
     return _feed;
   } 
 

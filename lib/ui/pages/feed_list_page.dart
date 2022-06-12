@@ -6,7 +6,7 @@ import 'add_feed_page.dart';
 import 'settings_page.dart';
 import 'saved_posts_page.dart';
 // Shared
-import 'package:freeder/ui/shared/feed_tile.dart';
+import 'package:freeder/ui/shared/post/feed_tile.dart';
 import 'package:freeder/ui/shared/nothing_to_show.dart';
 // Models
 import '../../model/feedListModel.dart';

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:freeder/model/saveFeedModel.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../services/WebView/webview.dart';
+import '../../../services/WebView/webview.dart';
 // ignore: depend_on_referenced_packages
 import 'package:html/dom.dart' as dom;
-import '../../data/database.dart';
-import '../../utils/utils.dart';
+import '../../../data/database.dart';
+import '../../../utils/utils.dart';
 
 class feedCard extends StatefulWidget {
   late String title;
@@ -145,15 +143,6 @@ class _feedCardState extends State<feedCard> {
         padding: const EdgeInsets.all(8.0),
         child: Text(parseHtmlString(description), maxLines: 5,),
       );
-      // return Html(
-      //     data: description,
-      //     onLinkTap: (String? url, RenderContext context,
-      //         Map<String, String> attributes, dom.Element? element) {
-      //       Navigator.push(
-      //           buildcontext,
-      //           MaterialPageRoute(
-      //               builder: (context) => WebViewExample(url: url as String)));
-      //     });
     }
     ;
     return const SizedBox.shrink();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/database.dart';
-import '../shared/feedCard.dart';
+import '../shared/post/feedCard.dart';
 import '../../model/saveFeedModel.dart';
 
 class Saved extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freeder/model/feedHistoryModel.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:freeder/ui/shared/feedCard.dart';
+import 'package:freeder/ui/shared/post/feedCard.dart';
 import 'package:freeder/ui/shared/slideCard.dart';
 
 class FeedMain extends StatelessWidget {

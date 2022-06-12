@@ -20,7 +20,7 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> {
   String loadingState = "loading";
-  List<feedHistoryModel> _feed = [];
+  List<feedHistoryModel> _feed = [];  
   final ItemScrollController _scrollController = ItemScrollController();
   int newPostCount = 0;
 
@@ -31,11 +31,16 @@ class _FeedState extends State<Feed> {
     _refresh(widget.feedURL);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    
+  }
+
   load(String feedURL) async {
     setState(() {
       loadingState = "loading";
     });
-    if (_feed == []) return;
     List<feedHistoryModel> localFeed =
         await FeedController.controller.getStoredPosts(feedURL);
 
