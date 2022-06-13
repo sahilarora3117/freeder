@@ -19,8 +19,8 @@ class Feed extends StatefulWidget {
 }
 
 class _FeedState extends State<Feed> {
-  String loadingState = "loading";
-  List<feedHistoryModel> _feed = [];  
+  bool loadingState = true;
+  List<feedHistoryModel> _feed = [];
   final ItemScrollController _scrollController = ItemScrollController();
   int newPostCount = 0;
 
@@ -34,19 +34,18 @@ class _FeedState extends State<Feed> {
   @override
   void dispose() {
     super.dispose();
-    
   }
 
   load(String feedURL) async {
     setState(() {
-      loadingState = "loading";
+      loadingState = true;
     });
     List<feedHistoryModel> localFeed =
         await FeedController.controller.getStoredPosts(feedURL);
 
     setState(() {
       _feed = localFeed;
-      loadingState = "loaded";
+      loadingState = false;
     });
   }
 
@@ -77,38 +76,34 @@ class _FeedState extends State<Feed> {
     }
   }
 
+  Posts() {
+    return Scaffold(
+      body: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: ((context, innerBoxIsScrolled) => [
+              SliverAppBar(
+                floating: true,
+                title: Text(widget.feedTitle),
+                snap: true,
+              )
+            ]),
+        body: FeedMain(
+          feed: _feed,
+          refresh: () => _refresh(widget.feedURL),
+          feedURL: widget.feedURL,
+          controller: _scrollController,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (loadingState == "loading") {
-      return Scaffold(
-          appBar: AppBar(title: Text(widget.feedTitle)),
-          body: const Center(
-            child: CircularProgressIndicator(),
-          ));
-    } else if (_feed == []) {
-      return Scaffold(
-        appBar: AppBar(title: Text(widget.feedTitle)),
-        body: NetworkError(refresh: load(widget.feedURL))
-      );
-    } else {
-      return Scaffold(
-        body: NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: ((context, innerBoxIsScrolled) => [
-                SliverAppBar(
-                  floating: true,
-                  title: Text(widget.feedTitle),
-                  snap: true,
-                )
-              ]),
-          body: FeedMain(
-            feed: _feed,
-            refresh: () => _refresh(widget.feedURL),
-            feedURL: widget.feedURL,
-            controller: _scrollController,
-          ),
-        ),
-      );
-    }
+    return Scaffold(
+        body: (loadingState)
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Posts());
   }
 }
