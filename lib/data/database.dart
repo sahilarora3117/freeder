@@ -1,11 +1,14 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../model/feedListModel.dart';
-import '../model/saveFeedModel.dart';
-import '../model/feedHistoryModel.dart';
+import 'package:freeder/model/feedHistoryModel.dart';
+import 'package:freeder/model/saveFeedModel.dart';
+import 'package:freeder/model/feedListModel.dart';
+
 
 class DBProvider {
   DBProvider._();
