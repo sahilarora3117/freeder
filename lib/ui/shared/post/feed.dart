@@ -4,6 +4,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:freeder/ui/shared/post/feedCard.dart';
 import 'package:freeder/ui/shared/slideCard.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class FeedMain extends StatelessWidget {
   final List<feedHistoryModel> feed;
@@ -43,7 +44,7 @@ class FeedMain extends StatelessWidget {
                   ]),
               child: feedCard(
                 title: item.title,
-                pubDate: item.pubDate,
+                pubDate: timeago.format(DateTime.parse(item.pubDate)),
                 enclosure: item.enclosure,
                 description: item.description,
                 url: item.url,

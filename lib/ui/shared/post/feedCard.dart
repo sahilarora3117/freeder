@@ -129,7 +129,7 @@ class _feedCardState extends State<feedCard> {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Text(
-          "Date posted: $pubDate",
+          pubDate,
           style: Theme.of(context).textTheme.titleSmall,
         ),
       );
@@ -141,7 +141,10 @@ class _feedCardState extends State<feedCard> {
     if (description != "") {
       return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(parseHtmlString(description), maxLines: 5,),
+        child: Text(
+          parseHtmlString(description),
+          maxLines: 5,
+        ),
       );
     }
     ;
